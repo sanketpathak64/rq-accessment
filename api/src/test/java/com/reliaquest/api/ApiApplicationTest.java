@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import com.reliaquest.server.model.MockEmployee;
 import com.reliaquest.server.service.MockEmployeeService;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
@@ -85,5 +86,25 @@ class ApiApplicationTest {
         Map<String, Object> data = (Map<String, Object>) response.getBody().get("data");
 
         assertTrue(data.get("employee_name").equals(firstEmployee.getName()));
+    }
+
+    @Test
+    void shouldReturnHighestSalary() {
+        List<MockEmployee> employees = mockEmployeeService.getMockEmployees();
+        assertFalse(employees.isEmpty());
+
+        Integer salary = employees.stream()
+                .max(Comparator.comparingInt(MockEmployee::getSalary))
+                .map(MockEmployee::getSalary)
+                .orElse(0);
+
+        ResponseEntity<Map> response =
+                restTemplate.getForEntity(baseUrl + port + "/api/v1/employee/highestSalary", Map.class);
+
+        assertEquals(200, response.getStatusCodeValue());
+
+        Integer data = (Integer) response.getBody().get("data");
+
+        assertTrue(data.equals(salary));
     }
 }

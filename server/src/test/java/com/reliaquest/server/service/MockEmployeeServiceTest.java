@@ -56,4 +56,11 @@ class MockEmployeeServiceTest {
         Optional<MockEmployee> employee = mockEmployeeService.findById(new UUID(1, 4));
         assertFalse(employee.isPresent());
     }
+
+    @Test
+    void shouldGetEmployeeByHighestSalary() {
+        Integer salary = mockEmployeeService.findEmployeeByHighestSalary();
+
+        assertEquals(2000, salary);
+    }
 }

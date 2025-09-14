@@ -44,6 +44,11 @@ public class MockEmployeeController {
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).body(Response.handled()));
     }
 
+    @GetMapping("/highestSalary")
+    public Response<Integer> getEmployeeByHighestSalary() {
+        return Response.handledWith(mockEmployeeService.findEmployeeByHighestSalary());
+    }
+
     @PostMapping()
     public Response<MockEmployee> createEmployee(@Valid @RequestBody CreateMockEmployeeInput input) {
         return Response.handledWith(mockEmployeeService.create(input));
