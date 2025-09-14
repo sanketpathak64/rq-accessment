@@ -2,6 +2,7 @@ package com.reliaquest.api;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.reliaquest.server.model.CreateMockEmployeeInput;
 import com.reliaquest.server.model.MockEmployee;
 import com.reliaquest.server.service.MockEmployeeService;
 import java.util.Comparator;
@@ -12,6 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -125,5 +129,35 @@ class ApiApplicationTest {
         for (String name : expectedNames) {
             assertTrue(data.contains(name));
         }
+    }
+
+    @Test
+    void shouldCreateEmployee() {
+        CreateMockEmployeeInput input = new CreateMockEmployeeInput();
+        input.setName("Alice");
+        input.setAge(28);
+        input.setSalary(75000);
+        input.setTitle("Engineer");
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        HttpEntity<CreateMockEmployeeInput> request = new HttpEntity<>(input, headers);
+
+        ResponseEntity<Map> response =
+                restTemplate.postForEntity(baseUrl + port + "/api/v1/employee", request, Map.class);
+
+        assertEquals(200, response.getStatusCodeValue());
+
+        Map<String, Object> body = response.getBody();
+        assertNotNull(body);
+        Map<String, Object> data = (Map<String, Object>) body.get("data");
+        assertNotNull(data);
+
+        assertEquals("Alice", data.get("employee_name"));
+        assertEquals(28, data.get("employee_age"));
+        assertEquals(75000, data.get("employee_salary"));
+        assertEquals("Engineer", data.get("employee_title"));
+        assertNotNull(data.get("id"));
     }
 }

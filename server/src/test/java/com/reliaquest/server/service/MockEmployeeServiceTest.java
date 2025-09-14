@@ -2,7 +2,9 @@ package com.reliaquest.server.service;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.reliaquest.server.model.CreateMockEmployeeInput;
 import com.reliaquest.server.model.MockEmployee;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -16,10 +18,10 @@ class MockEmployeeServiceTest {
     private Faker faker = new Faker();
 
     UUID id = new UUID(1, 1);
-    List<MockEmployee> testEmployees = List.of(
+    List<MockEmployee> testEmployees = new ArrayList<>(List.of(
             new MockEmployee(id, "Alice Johnson", 1000, 25, "Developer", "alice@example.com"),
             new MockEmployee(id, "Bob Smith", 2000, 30, "Manager", "bob@example.com"),
-            new MockEmployee(id, "Alina Brown", 1500, 28, "Designer", "alina@example.com"));
+            new MockEmployee(id, "Alina Brown", 1500, 28, "Designer", "alina@example.com")));
 
     @BeforeEach
     void setUp() {
@@ -77,5 +79,24 @@ class MockEmployeeServiceTest {
         for (String name : top10Names) {
             assertTrue(testEmployees.stream().anyMatch(e -> e.getName().equals(name)));
         }
+    }
+
+    @Test
+    void shouldCreateEmployee() {
+        CreateMockEmployeeInput input = new CreateMockEmployeeInput();
+        input.setName("Alice");
+        input.setAge(28);
+        input.setSalary(75000);
+        input.setTitle("Engineer");
+
+        MockEmployee employee = mockEmployeeService.create(input);
+
+        assertNotNull(employee.getId());
+        assertEquals("Alice", employee.getName());
+        assertEquals(28, employee.getAge());
+        assertEquals(75000, employee.getSalary());
+        assertEquals("Engineer", employee.getTitle());
+
+        assertTrue(mockEmployeeService.getMockEmployees().contains(employee));
     }
 }
