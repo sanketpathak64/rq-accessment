@@ -32,6 +32,12 @@ public class MockEmployeeService {
                 .findFirst();
     }
 
+    public List<MockEmployee> findEmployeeByNameSearch(String searchString) {
+        return mockEmployees.stream()
+                .filter(it -> it.getName().toLowerCase().contains(searchString.toLowerCase()))
+                .toList();
+    }
+
     public MockEmployee create(@NonNull CreateMockEmployeeInput input) {
         final var mockEmployee = MockEmployee.from(
                 ServerConfiguration.EMAIL_TEMPLATE.formatted(

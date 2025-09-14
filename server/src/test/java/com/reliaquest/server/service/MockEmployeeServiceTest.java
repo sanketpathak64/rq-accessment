@@ -1,4 +1,42 @@
-import static org.junit.jupiter.api.Assertions.*;
+package com.reliaquest.server.service;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import com.reliaquest.server.model.MockEmployee;
+import java.util.List;
+import java.util.UUID;
+import net.datafaker.Faker;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 class MockEmployeeServiceTest {
-  
+
+    private MockEmployeeService mockEmployeeService;
+    private Faker faker = new Faker();
+
+    UUID id = new UUID(1, 1);
+    List<MockEmployee> testEmployees = List.of(
+            new MockEmployee(id, "Alice Johnson", 1000, 25, "Developer", "alice@example.com"),
+            new MockEmployee(id, "Bob Smith", 2000, 30, "Manager", "bob@example.com"),
+            new MockEmployee(id, "Alina Brown", 1500, 28, "Designer", "alina@example.com"));
+
+    @BeforeEach
+    void setUp() {
+        mockEmployeeService = new MockEmployeeService(faker, testEmployees);
+    }
+
+    @Test
+    void shouldFindEmployeeByNameCaseInsensitive() {
+        String searchLower = "alice";
+        String searchUpper = "ALICE";
+        String searchPartial = "lice";
+
+        List<MockEmployee> resultLower = mockEmployeeService.findEmployeeByNameSearch(searchLower);
+        List<MockEmployee> resultUpper = mockEmployeeService.findEmployeeByNameSearch(searchUpper);
+        List<MockEmployee> resultPartial = mockEmployeeService.findEmployeeByNameSearch(searchPartial);
+
+        assertTrue(resultLower.stream().allMatch(e -> e.getName().toLowerCase().contains(searchLower)));
+        assertTrue(resultUpper.stream().allMatch(e -> e.getName().toLowerCase().contains(searchLower)));
+        assertTrue(resultUpper.stream().allMatch(e -> e.getName().toLowerCase().contains(searchPartial)));
+    }
 }

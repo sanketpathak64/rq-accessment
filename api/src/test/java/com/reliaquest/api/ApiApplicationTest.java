@@ -1,7 +1,6 @@
 package com.reliaquest.api;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.reliaquest.server.model.MockEmployee;
 import com.reliaquest.server.service.MockEmployeeService;
@@ -32,9 +31,6 @@ class ApiApplicationTest {
     void shouldGetListOfEmployees() {
         List<MockEmployee> employees = mockEmployeeService.getMockEmployees();
         assertNotNull(employees);
-
-        System.out.println("Port: " + port);
-
         ResponseEntity<Map> response = restTemplate.getForEntity(baseUrl + port + "/api/v1/employee", Map.class);
 
         assertEquals(200, response.getStatusCodeValue());
@@ -54,5 +50,23 @@ class ApiApplicationTest {
             assertNotNull(emp.get("employee_age"));
             assertNotNull(emp.get("employee_title"));
         }
+    }
+
+    @Test
+    void shouldReturnEmployeeWhenNameSearchMatches() {
+        List<MockEmployee> employees = mockEmployeeService.getMockEmployees();
+        assertFalse(employees.isEmpty());
+
+        String firstEmployeeName = employees.get(0).getName();
+        String searchFragment = firstEmployeeName.substring(0, 3);
+
+        ResponseEntity<Map> response =
+                restTemplate.getForEntity(baseUrl + port + "/api/v1/employee/search/" + searchFragment, Map.class);
+
+        assertEquals(200, response.getStatusCodeValue());
+
+        List<Map<String, Object>> data =
+                (List<Map<String, Object>>) response.getBody().get("data");
+        assertTrue(data.stream().anyMatch(e -> e.get("employee_name").equals(firstEmployeeName)));
     }
 }

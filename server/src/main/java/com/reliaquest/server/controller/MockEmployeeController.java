@@ -31,6 +31,11 @@ public class MockEmployeeController {
         return Response.handledWith(mockEmployeeService.getMockEmployees());
     }
 
+    @GetMapping("/search/{searchString}")
+    public Response<List<MockEmployee>> getEmployeesByNameSearch(@PathVariable("searchString") String searchString) {
+        return Response.handledWith(mockEmployeeService.findEmployeeByNameSearch(searchString));
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<Response<MockEmployee>> getEmployee(@PathVariable("id") UUID uuid) {
         return mockEmployeeService
