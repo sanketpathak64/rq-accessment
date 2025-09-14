@@ -69,4 +69,21 @@ class ApiApplicationTest {
                 (List<Map<String, Object>>) response.getBody().get("data");
         assertTrue(data.stream().anyMatch(e -> e.get("employee_name").equals(firstEmployeeName)));
     }
+
+    @Test
+    void shouldReturnEmployeeById() {
+        List<MockEmployee> employees = mockEmployeeService.getMockEmployees();
+        assertFalse(employees.isEmpty());
+
+        MockEmployee firstEmployee = employees.get(0);
+
+        ResponseEntity<Map> response =
+                restTemplate.getForEntity(baseUrl + port + "/api/v1/employee/" + firstEmployee.getId(), Map.class);
+
+        assertEquals(200, response.getStatusCodeValue());
+
+        Map<String, Object> data = (Map<String, Object>) response.getBody().get("data");
+
+        assertTrue(data.get("employee_name").equals(firstEmployee.getName()));
+    }
 }

@@ -1,9 +1,10 @@
 package com.reliaquest.server.service;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.reliaquest.server.model.MockEmployee;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import net.datafaker.Faker;
 import org.junit.jupiter.api.BeforeEach;
@@ -37,6 +38,22 @@ class MockEmployeeServiceTest {
 
         assertTrue(resultLower.stream().allMatch(e -> e.getName().toLowerCase().contains(searchLower)));
         assertTrue(resultUpper.stream().allMatch(e -> e.getName().toLowerCase().contains(searchLower)));
-        assertTrue(resultUpper.stream().allMatch(e -> e.getName().toLowerCase().contains(searchPartial)));
+        assertTrue(
+                resultPartial.stream().allMatch(e -> e.getName().toLowerCase().contains(searchPartial)));
+    }
+
+    @Test
+    void shouldGetEmployeeById() {
+        MockEmployee firstEmployee = testEmployees.get(0);
+        Optional<MockEmployee> employee = mockEmployeeService.findById(firstEmployee.getId());
+        assertTrue(employee.isPresent());
+
+        assertEquals(employee.get().getName(), firstEmployee.getName());
+    }
+
+    @Test
+    void shouldNotGetEmployeeById() {
+        Optional<MockEmployee> employee = mockEmployeeService.findById(new UUID(1, 4));
+        assertFalse(employee.isPresent());
     }
 }

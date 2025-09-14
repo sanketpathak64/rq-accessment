@@ -27,8 +27,7 @@ public class MockEmployeeService {
 
     public Optional<MockEmployee> findById(@NonNull UUID uuid) {
         return mockEmployees.stream()
-                .filter(mockEmployee -> Objects.nonNull(mockEmployee.getId())
-                        && mockEmployee.getId().equals(uuid))
+                .filter(mockEmployee -> uuid.equals(mockEmployee.getId()))
                 .findFirst();
     }
 
