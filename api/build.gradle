@@ -9,3 +9,7 @@ dependencies {
 springBoot {
     mainClass = 'com.reliaquest.api.ApiApplication'
 }
+
+dependencies {
+    implementation project(":server")
+}
