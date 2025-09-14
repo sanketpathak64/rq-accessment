@@ -13,7 +13,7 @@ import net.datafaker.Faker;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-class MockEmployeeServiceTest {
+public class MockEmployeeServiceTest {
 
     private MockEmployeeService mockEmployeeService;
     private Faker faker = new Faker();
