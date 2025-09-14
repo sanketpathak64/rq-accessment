@@ -107,4 +107,23 @@ class ApiApplicationTest {
 
         assertTrue(data.equals(salary));
     }
+
+    @Test
+    void shouldReturnTop10HighestEarningEmployeeNames() {
+        List<String> expectedNames = mockEmployeeService.findTop10HighestEarningEmployeeNames();
+        assertFalse(expectedNames.isEmpty());
+
+        ResponseEntity<Map> response = restTemplate.getForEntity(
+                baseUrl + port + "/api/v1/employee/topTenHighestEarningEmployeeNames", Map.class);
+
+        assertEquals(200, response.getStatusCodeValue());
+
+        List<String> data = (List<String>) response.getBody().get("data");
+
+        assertEquals(expectedNames.size(), data.size());
+
+        for (String name : expectedNames) {
+            assertTrue(data.contains(name));
+        }
+    }
 }

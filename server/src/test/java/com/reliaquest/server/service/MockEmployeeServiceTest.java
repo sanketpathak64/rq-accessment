@@ -63,4 +63,19 @@ class MockEmployeeServiceTest {
 
         assertEquals(2000, salary);
     }
+
+    @Test
+    void shouldReturnTop10HighestEarningEmployeeNames() {
+        List<String> top10Names = mockEmployeeService.findTop10HighestEarningEmployeeNames();
+
+        assertEquals("Bob Smith", top10Names.get(0));
+        assertEquals("Alina Brown", top10Names.get(1));
+        assertEquals("Alice Johnson", top10Names.get(2));
+
+        assertEquals(3, top10Names.size());
+
+        for (String name : top10Names) {
+            assertTrue(testEmployees.stream().anyMatch(e -> e.getName().equals(name)));
+        }
+    }
 }

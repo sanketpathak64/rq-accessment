@@ -49,6 +49,11 @@ public class MockEmployeeController {
         return Response.handledWith(mockEmployeeService.findEmployeeByHighestSalary());
     }
 
+    @GetMapping("/topTenHighestEarningEmployeeNames")
+    public Response<List<String>> getTop10EmployeesByHighestSalary() {
+        return Response.handledWith(mockEmployeeService.findTop10HighestEarningEmployeeNames());
+    }
+
     @PostMapping()
     public Response<MockEmployee> createEmployee(@Valid @RequestBody CreateMockEmployeeInput input) {
         return Response.handledWith(mockEmployeeService.create(input));

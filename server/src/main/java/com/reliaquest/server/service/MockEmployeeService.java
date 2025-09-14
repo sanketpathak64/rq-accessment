@@ -64,4 +64,12 @@ public class MockEmployeeService {
                 .map(MockEmployee::getSalary)
                 .orElse(0);
     }
+
+    public List<String> findTop10HighestEarningEmployeeNames() {
+        return mockEmployees.stream()
+                .sorted(Comparator.comparingInt(MockEmployee::getSalary).reversed())
+                .limit(10)
+                .map(MockEmployee::getName)
+                .toList();
+    }
 }
