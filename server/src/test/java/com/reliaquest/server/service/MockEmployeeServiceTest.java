@@ -3,6 +3,7 @@ package com.reliaquest.server.service;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.reliaquest.server.model.CreateMockEmployeeInput;
+import com.reliaquest.server.model.DeleteMockEmployeeInput;
 import com.reliaquest.server.model.MockEmployee;
 import java.util.ArrayList;
 import java.util.List;
@@ -98,5 +99,21 @@ class MockEmployeeServiceTest {
         assertEquals("Engineer", employee.getTitle());
 
         assertTrue(mockEmployeeService.getMockEmployees().contains(employee));
+    }
+
+    @Test
+    void shouldDeleteEmployeeByName() {
+        MockEmployee employeeToDelete = testEmployees.get(0);
+
+        DeleteMockEmployeeInput input = new DeleteMockEmployeeInput();
+        input.setName(employeeToDelete.getName());
+
+        boolean result = mockEmployeeService.delete(input);
+
+        assertTrue(result);
+        assertFalse(mockEmployeeService.getMockEmployees().contains(employeeToDelete));
+
+        // adding employee again after assertion
+        testEmployees.add(employeeToDelete);
     }
 }

@@ -1,8 +1,10 @@
 package com.reliaquest.api;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.http.HttpStatus.OK;
 
 import com.reliaquest.server.model.CreateMockEmployeeInput;
+import com.reliaquest.server.model.DeleteMockEmployeeInput;
 import com.reliaquest.server.model.MockEmployee;
 import com.reliaquest.server.service.MockEmployeeService;
 import java.util.Comparator;
@@ -13,10 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class ApiApplicationTest {
@@ -159,5 +158,24 @@ class ApiApplicationTest {
         assertEquals(75000, data.get("employee_salary"));
         assertEquals("Engineer", data.get("employee_title"));
         assertNotNull(data.get("id"));
+    }
+
+    @Test
+    void shouldDeleteEmployeeByName() {
+        MockEmployee employeeToDelete = mockEmployeeService.getMockEmployees().get(0);
+
+        DeleteMockEmployeeInput input = new DeleteMockEmployeeInput();
+        input.setName(employeeToDelete.getName());
+
+        HttpEntity<DeleteMockEmployeeInput> request = new HttpEntity<>(input);
+
+        ResponseEntity<Map> response =
+                restTemplate.exchange(baseUrl + port + "/api/v1/employee", HttpMethod.DELETE, request, Map.class);
+
+        assertEquals(OK.value(), response.getStatusCodeValue());
+
+        List<MockEmployee> remainingEmployees = mockEmployeeService.getMockEmployees();
+        assertFalse(
+                remainingEmployees.stream().anyMatch(e -> e.getName().equalsIgnoreCase(employeeToDelete.getName())));
     }
 }
