@@ -34,17 +34,6 @@ public class EmployeeService {
                 .collect(Collectors.toList());
     }
 
-    //    public Employee getEmployeeById(String id) {
-    //        log.info("fetching employee for id {}", id);
-    //
-    //        ResponseEntity<Employee> response = restTemplate.getForEntity(
-    //                baseUrl + "/" + id,
-    //                Employee.class
-    //        );
-    //
-    //        return response.getBody();
-    //    }
-
     public Employee getEmployeeById(String id) {
         log.info("fetching employee for id {}", id);
 
