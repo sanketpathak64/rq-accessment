@@ -11,4 +11,3 @@ public class ServerResponse<T> {
     private T data;
     private String status;
 }
-

@@ -1,6 +1,5 @@
 package com.reliaquest.api.dto;
 
-
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,4 +12,3 @@ public class DeleteEmployeeInput {
     @NotBlank
     private String name;
 }
-

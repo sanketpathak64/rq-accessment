@@ -4,12 +4,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.reliaquest.api.dto.CreateEmployeeInput;
 import com.reliaquest.api.dto.Employee;
 import com.reliaquest.api.service.EmployeeService;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/employees")
@@ -25,7 +24,7 @@ public class EmployeeController implements IEmployeeController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Employee> getEmployeeById(@PathVariable String id) {
+    public ResponseEntity<Employee> getEmployeeById(@PathVariable("id") String id) {
         return ResponseEntity.ok(employeeService.getEmployeeById(id));
     }
 
@@ -54,9 +53,7 @@ public class EmployeeController implements IEmployeeController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteEmployeeById(@PathVariable String id) {
+    public ResponseEntity<String> deleteEmployeeById(@PathVariable("id") String id) {
         return ResponseEntity.ok(employeeService.deleteEmployeeById(id));
     }
 }
-
-
