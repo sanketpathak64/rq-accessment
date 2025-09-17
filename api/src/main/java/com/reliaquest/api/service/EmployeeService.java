@@ -23,6 +23,7 @@ public class EmployeeService {
     private final String baseUrl = "http://localhost:8111/api/v1/employee";
 
     public List<Employee> getAllEmployees() {
+        log.info("Recieved request to fetch all employees");
         ResponseEntity<ServerResponse<List<Employee>>> response = restTemplate.exchange(baseUrl, HttpMethod.GET, null, new ParameterizedTypeReference<ServerResponse<List<Employee>>>() {
         });
 
@@ -30,10 +31,12 @@ public class EmployeeService {
     }
 
     public List<Employee> getEmployeesByNameSearch(String search) {
+        log.info("Recieved a employee search request for {}", search);
         return getAllEmployees().stream().filter(e -> e.getName() != null && e.getName().toLowerCase().contains(search.toLowerCase())).collect(Collectors.toList());
     }
 
     public Employee getEmployeeById(String id) {
+        log.info("fetching employee for id {}", id);
         ResponseEntity<ServerResponse<Employee>> response = restTemplate.exchange(baseUrl + "/" + id, HttpMethod.GET,
                 null, new ParameterizedTypeReference<>() {
                 });
@@ -42,25 +45,29 @@ public class EmployeeService {
     }
 
     public Integer getHighestSalaryOfEmployees() {
-        return getAllEmployees().stream().map(Employee::getSalary).filter(Objects::nonNull).max(Integer::compareTo).orElse(0);
+        return getAllEmployees().stream().map(Employee::getSalary).filter(Objects::nonNull)
+                .max(Integer::compareTo).orElse(0);
     }
 
     public List<String> getTop10HighestEarningEmployeeNames() {
-        return getAllEmployees().stream().sorted(Comparator.comparing(Employee::getSalary, Comparator.nullsLast(Comparator.reverseOrder()))).limit(10).map(Employee::getName).collect(Collectors.toList());
+        return getAllEmployees().stream().sorted(Comparator.comparing(Employee::getSalary,
+                        Comparator.nullsLast(Comparator.reverseOrder()))).limit(10).map(Employee::getName)
+                .collect(Collectors.toList());
     }
 
     public Employee createEmployee(CreateEmployeeInput input) {
         HttpEntity<CreateEmployeeInput> request = new HttpEntity<>(input);
         log.info("Request to create employee {}", input.getName());
-        ResponseEntity<ServerResponse<Employee>> response = restTemplate.exchange(baseUrl, HttpMethod.POST, request, new ParameterizedTypeReference<ServerResponse<Employee>>() {
-        });
+        ResponseEntity<ServerResponse<Employee>> response = restTemplate.exchange(baseUrl,
+                HttpMethod.POST, request, new ParameterizedTypeReference<>() {
+                });
 
         return response.getBody().getData();
     }
 
     public String deleteEmployeeById(String id) {
+        log.info("Recieved a delete employee request for {}", id);
         Employee employee = getEmployeeById(id);
-
         String name = employee.getName();
 
         DeleteEmployeeInput input = new DeleteEmployeeInput(name);
@@ -70,7 +77,8 @@ public class EmployeeService {
                 baseUrl,
                 HttpMethod.DELETE,
                 request,
-                new ParameterizedTypeReference<>() {}
+                new ParameterizedTypeReference<>() {
+                }
         );
 
         Map<String, Object> body = response.getBody();
